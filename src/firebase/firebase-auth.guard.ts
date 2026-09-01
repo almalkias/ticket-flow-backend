@@ -6,11 +6,15 @@ import {
   Inject,
 } from '@nestjs/common';
 import * as admin from 'firebase-admin';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
+import { User } from '../users/user.entity';
 
 @Injectable()
 export class FirebaseAuthGuard implements CanActivate {
   constructor(
     @Inject('FIREBASE_ADMIN') private readonly firebaseApp: admin.app.App,
+    @InjectRepository(User) private readonly usersRepository: Repository<User>,
   ) {}
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
@@ -25,7 +29,15 @@ export class FirebaseAuthGuard implements CanActivate {
 
     try {
       const decoded = await this.firebaseApp.auth().verifyIdToken(token);
-      request.user = decoded;
+      const user = await this.usersRepository.findOne({
+        where: { firebase_uid: decoded.uid },
+      });
+
+      if (!user || !user.is_active) {
+        throw new UnauthorizedException('User not found or inactive');
+      }
+
+      request.user = user;
       return true;
     } catch {
       throw new UnauthorizedException('Invalid token');
