@@ -5,9 +5,9 @@ export class CreateAgentDto {
   @ApiProperty()
   @IsString()
   @IsNotEmpty()
-  full_name: string;
+  full_name!: string;
 
   @ApiProperty()
   @IsEmail()
-  email: string;
+  email!: string;
 }

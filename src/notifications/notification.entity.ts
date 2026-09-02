@@ -19,25 +19,25 @@ export enum NotificationType {
 @Entity('notifications')
 export class Notification {
   @PrimaryGeneratedColumn()
-  id: number;
+  id!: number;
 
   @ManyToOne(() => User)
   @JoinColumn({ name: 'user_id' })
-  user: User;
+  user!: User;
 
   @ManyToOne(() => Ticket)
   @JoinColumn({ name: 'ticket_id' })
-  ticket: Ticket;
+  ticket!: Ticket;
 
   @Column({ type: 'enum', enum: NotificationType })
-  type: NotificationType;
+  type!: NotificationType;
 
   @Column()
-  message: string;
+  message!: string;
 
   @Column({ default: false })
-  is_read: boolean;
+  is_read!: boolean;
 
   @CreateDateColumn()
-  created_at: Date;
+  created_at!: Date;
 }

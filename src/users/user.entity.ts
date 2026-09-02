@@ -14,26 +14,26 @@ export enum UserRole {
 @Entity('users')
 export class User {
   @PrimaryGeneratedColumn()
-  id: number;
+  id!: number;
 
   @Column({ unique: true })
-  firebase_uid: string;
+  firebase_uid!: string;
 
   @Column({ unique: true })
-  email: string;
+  email!: string;
 
   @Column()
-  full_name: string;
+  full_name!: string;
 
   @Column({ type: 'enum', enum: UserRole })
-  role: UserRole;
+  role!: UserRole;
 
   @Column({ default: true })
-  is_active: boolean;
+  is_active!: boolean;
 
   @CreateDateColumn()
-  created_at: Date;
+  created_at!: Date;
 
   @UpdateDateColumn()
-  updated_at: Date;
+  updated_at!: Date;
 }

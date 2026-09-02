@@ -8,14 +8,14 @@ import {
 @Entity('categories')
 export class Category {
   @PrimaryGeneratedColumn()
-  id: number;
+  id!: number;
 
   @Column({ unique: true })
-  name: string;
+  name!: string;
 
   @Column({ default: true })
-  is_active: boolean;
+  is_active!: boolean;
 
   @CreateDateColumn()
-  created_at: Date;
+  created_at!: Date;
 }

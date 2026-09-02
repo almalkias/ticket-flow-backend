@@ -27,46 +27,46 @@ export enum TicketPriority {
 @Entity('tickets')
 export class Ticket {
   @PrimaryGeneratedColumn()
-  id: number;
+  id!: number;
 
   @Column({ unique: true })
-  reference_number: string;
+  reference_number!: string;
 
   @Column()
-  customer_name: string;
+  customer_name!: string;
 
   @Column()
-  customer_email: string;
+  customer_email!: string;
 
   @Column()
-  subject: string;
+  subject!: string;
 
   @Column('text')
-  description: string;
+  description!: string;
 
   @Column({ type: 'enum', enum: TicketStatus, default: TicketStatus.OPEN })
-  status: TicketStatus;
+  status!: TicketStatus;
 
   @Column({ type: 'enum', enum: TicketPriority, default: TicketPriority.LOW })
-  priority: TicketPriority;
+  priority!: TicketPriority;
 
   @ManyToOne(() => Category, { nullable: true })
   @JoinColumn({ name: 'category_id' })
-  category: Category;
+  category!: Category;
 
   @ManyToOne(() => User, { nullable: true })
   @JoinColumn({ name: 'assigned_to' })
-  assigned_to: User;
+  assigned_to!: User;
 
   @Column({ nullable: true })
-  resolved_at: Date;
+  resolved_at!: Date;
 
   @Column({ nullable: true })
-  closed_at: Date;
+  closed_at!: Date;
 
   @CreateDateColumn()
-  created_at: Date;
+  created_at!: Date;
 
   @UpdateDateColumn()
-  updated_at: Date;
+  updated_at!: Date;
 }

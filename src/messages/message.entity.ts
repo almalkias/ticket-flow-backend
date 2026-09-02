@@ -16,27 +16,27 @@ export enum SenderType {
 @Entity('messages')
 export class Message {
   @PrimaryGeneratedColumn()
-  id: number;
+  id!: number;
 
   @ManyToOne(() => Ticket)
   @JoinColumn({ name: 'ticket_id' })
-  ticket: Ticket;
+  ticket!: Ticket;
 
   @Column('text')
-  body: string;
+  body!: string;
 
   @Column({ default: false })
-  is_internal: boolean;
+  is_internal!: boolean;
 
   @Column({ type: 'enum', enum: SenderType })
-  sender_type: SenderType;
+  sender_type!: SenderType;
 
   @Column({ nullable: true })
-  sender_user_id: number;
+  sender_user_id!: number;
 
   @Column()
-  sender_name: string;
+  sender_name!: string;
 
   @CreateDateColumn()
-  created_at: Date;
+  created_at!: Date;
 }
