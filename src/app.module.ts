@@ -4,12 +4,14 @@ import { DatabaseModule } from './database.module';
 import { FirebaseModule } from './firebase/firebase.module';
 import { AppController } from './app.controller';
 import { LoggerMiddleware } from './common/middleware/logger.middleware';
+import { UsersModule } from './users/users.module';
 
 @Module({
   imports: [
     ConfigModule.forRoot({ isGlobal: true }),
     DatabaseModule,
     FirebaseModule,
+    UsersModule,
   ],
   controllers: [AppController],
   providers: [],

@@ -12,9 +12,9 @@ import { User } from '../users/user.entity';
       provide: 'FIREBASE_ADMIN',
       useFactory: () => {
         return admin.initializeApp({
-          credential: admin.credential.cert(
-            serviceAccount as admin.ServiceAccount,
-          ),
+          credential: admin.credential.cert({
+            ...serviceAccount,
+          } as admin.ServiceAccount),
         });
       },
     },
