@@ -6,6 +6,7 @@ import { AppController } from './app.controller';
 import { LoggerMiddleware } from './common/middleware/logger.middleware';
 import { UsersModule } from './users/users.module';
 import { CategoriesModule } from './categories/categories.module';
+import { TicketsModule } from './tickets/tickets.module';
 
 @Module({
   imports: [
@@ -13,7 +14,8 @@ import { CategoriesModule } from './categories/categories.module';
     DatabaseModule,
     FirebaseModule,
     UsersModule,
-    CategoriesModule
+    CategoriesModule,
+    TicketsModule,
   ],
   controllers: [AppController],
   providers: [],
