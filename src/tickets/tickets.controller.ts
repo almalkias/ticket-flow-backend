@@ -6,6 +6,7 @@ import {
   Param,
   Body,
   UseGuards,
+  Query,
 } from '@nestjs/common';
 import { TicketsService } from './tickets.service';
 import { CreateTicketDto } from './dto/create-ticket.dto';
@@ -35,6 +36,11 @@ export class TicketsController {
   @Roles(UserRole.ADMIN, UserRole.AGENT)
   findAll(@CurrentUser() user: User) {
     return this.ticketsService.findAll(user);
+  }
+
+  @Get('track')
+  track(@Query('email') email: string, @Query('reference') reference: string) {
+    return this.ticketsService.track(email, reference);
   }
 
   @Get(':id')

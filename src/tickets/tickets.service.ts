@@ -178,4 +178,15 @@ export class TicketsService {
     ticket.closed_at = new Date();
     return this.ticketsRepository.save(ticket);
   }
+
+  async track(email: string, reference: string): Promise<Ticket> {
+    const ticket = await this.ticketsRepository.findOne({
+      where: { customer_email: email, reference_number: reference },
+      relations: { category: true, assigned_to: true },
+    });
+
+    if (!ticket) throw new NotFoundException('Ticket not found');
+
+    return ticket;
+  }
 }
