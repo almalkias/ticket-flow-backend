@@ -7,6 +7,7 @@ import { LoggerMiddleware } from './common/middleware/logger.middleware';
 import { UsersModule } from './users/users.module';
 import { CategoriesModule } from './categories/categories.module';
 import { TicketsModule } from './tickets/tickets.module';
+import { MessagesModule } from './messages/messages.module';
 
 @Module({
   imports: [
@@ -16,6 +17,7 @@ import { TicketsModule } from './tickets/tickets.module';
     UsersModule,
     CategoriesModule,
     TicketsModule,
+    MessagesModule,
   ],
   controllers: [AppController],
   providers: [],
