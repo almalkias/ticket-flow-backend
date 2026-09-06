@@ -12,6 +12,8 @@ import { CreateTicketDto } from './dto/create-ticket.dto';
 import { AssignTicketDto } from './dto/assign-ticket.dto';
 import { UpdatePriorityDto } from './dto/update-priority.dto';
 import { UpdateCategoryDto } from './dto/update-category.dto';
+import { NotificationsService } from '../notifications/notifications.service';
+import { NotificationType } from '../notifications/notification.entity';
 
 @Injectable()
 export class TicketsService {
@@ -22,6 +24,7 @@ export class TicketsService {
     private readonly categoriesRepository: Repository<Category>,
     @InjectRepository(User)
     private readonly usersRepository: Repository<User>,
+    private readonly notificationsService: NotificationsService,
   ) {}
 
   async create(dto: CreateTicketDto): Promise<Ticket> {
@@ -43,7 +46,21 @@ export class TicketsService {
       category,
     });
 
-    return this.ticketsRepository.save(ticket);
+    const saved = await this.ticketsRepository.save(ticket);
+
+    const admins = await this.usersRepository.find({
+      where: { role: UserRole.ADMIN, is_active: true },
+    });
+    const adminIds = admins.map((a) => a.id);
+
+    await this.notificationsService.createForUsers(
+      adminIds,
+      saved.id,
+      NotificationType.NEW_TICKET,
+      `New ticket submitted: ${saved.reference_number}`,
+    );
+
+    return saved;
   }
 
   async findAll(user: User): Promise<Ticket[]> {
@@ -89,7 +106,16 @@ export class TicketsService {
 
     ticket.assigned_to = agent;
     ticket.status = TicketStatus.IN_PROGRESS;
-    return this.ticketsRepository.save(ticket);
+    const saved = await this.ticketsRepository.save(ticket);
+
+    await this.notificationsService.createForUsers(
+      [agent.id],
+      saved.id,
+      NotificationType.TICKET_ASSIGNED,
+      `You have been assigned ticket: ${saved.reference_number}`,
+    );
+
+    return saved;
   }
 
   async updatePriority(id: number, dto: UpdatePriorityDto): Promise<Ticket> {
@@ -127,7 +153,21 @@ export class TicketsService {
 
     ticket.status = TicketStatus.RESOLVED;
     ticket.resolved_at = new Date();
-    return this.ticketsRepository.save(ticket);
+    const saved = await this.ticketsRepository.save(ticket);
+
+    const admins = await this.usersRepository.find({
+      where: { role: UserRole.ADMIN, is_active: true },
+    });
+    const adminIds = admins.map((a) => a.id);
+
+    await this.notificationsService.createForUsers(
+      adminIds,
+      saved.id,
+      NotificationType.STATUS_CHANGED,
+      `Ticket resolved: ${saved.reference_number}`,
+    );
+
+    return saved;
   }
 
   async close(id: number): Promise<Ticket> {

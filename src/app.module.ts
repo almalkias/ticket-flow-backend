@@ -8,6 +8,7 @@ import { UsersModule } from './users/users.module';
 import { CategoriesModule } from './categories/categories.module';
 import { TicketsModule } from './tickets/tickets.module';
 import { MessagesModule } from './messages/messages.module';
+import { NotificationsModule } from './notifications/notifications.module';
 
 @Module({
   imports: [
@@ -18,6 +19,7 @@ import { MessagesModule } from './messages/messages.module';
     CategoriesModule,
     TicketsModule,
     MessagesModule,
+    NotificationsModule,
   ],
   controllers: [AppController],
   providers: [],

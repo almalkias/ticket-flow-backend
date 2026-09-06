@@ -10,6 +10,8 @@ import { Message, SenderType } from './message.entity';
 import { Ticket, TicketStatus } from '../tickets/ticket.entity';
 import { User, UserRole } from '../users/user.entity';
 import { CreateMessageDto } from './dto/create-message.dto';
+import { NotificationsService } from '../notifications/notifications.service';
+import { NotificationType } from '../notifications/notification.entity';
 
 @Injectable()
 export class MessagesService {
@@ -18,6 +20,9 @@ export class MessagesService {
     private readonly messagesRepository: Repository<Message>,
     @InjectRepository(Ticket)
     private readonly ticketsRepository: Repository<Ticket>,
+    private readonly notificationsService: NotificationsService,
+    @InjectRepository(User)
+    private readonly usersRepository: Repository<User>,
   ) {}
 
   async create(
@@ -27,6 +32,7 @@ export class MessagesService {
   ): Promise<Message> {
     const ticket = await this.ticketsRepository.findOne({
       where: { id: ticketId },
+      relations: { assigned_to: true },
     });
 
     if (!ticket) throw new NotFoundException('Ticket not found');
@@ -68,6 +74,21 @@ export class MessagesService {
         ticket.status = TicketStatus.IN_PROGRESS;
         await this.ticketsRepository.save(ticket);
       }
+
+      const admins = await this.usersRepository.find({
+        where: { role: UserRole.ADMIN, is_active: true },
+      });
+      const recipientIds = admins.map((a) => a.id);
+      if (ticket.assigned_to) {
+        recipientIds.push(ticket.assigned_to.id);
+      }
+
+      await this.notificationsService.createForUsers(
+        recipientIds,
+        ticketId,
+        NotificationType.NEW_REPLY,
+        `Customer replied on ticket: ${ticket.reference_number}`,
+      );
     }
 
     const message = this.messagesRepository.create({

@@ -5,9 +5,13 @@ import { Category } from '../categories/category.entity';
 import { User } from '../users/user.entity';
 import { TicketsService } from './tickets.service';
 import { TicketsController } from './tickets.controller';
+import { NotificationsModule } from '../notifications/notifications.module';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Ticket, Category, User])],
+  imports: [
+    TypeOrmModule.forFeature([Ticket, Category, User]),
+    NotificationsModule,
+  ],
   controllers: [TicketsController],
   providers: [TicketsService],
 })
