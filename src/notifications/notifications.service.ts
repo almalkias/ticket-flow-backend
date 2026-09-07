@@ -31,6 +31,7 @@ export class NotificationsService {
   async findAll(userId: number): Promise<Notification[]> {
     return this.notificationsRepository.find({
       where: { user: { id: userId } },
+      relations: { ticket: true },
       order: { created_at: 'DESC' },
     });
   }
