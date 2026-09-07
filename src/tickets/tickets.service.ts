@@ -96,7 +96,10 @@ export class TicketsService {
   }
 
   async assign(id: number, dto: AssignTicketDto): Promise<Ticket> {
-    const ticket = await this.ticketsRepository.findOne({ where: { id } });
+    const ticket = await this.ticketsRepository.findOne({
+      where: { id },
+      relations: { category: true },
+    });
     if (!ticket) throw new NotFoundException('Ticket not found');
 
     const agent = await this.usersRepository.findOne({
@@ -119,14 +122,20 @@ export class TicketsService {
   }
 
   async updatePriority(id: number, dto: UpdatePriorityDto): Promise<Ticket> {
-    const ticket = await this.ticketsRepository.findOne({ where: { id } });
+    const ticket = await this.ticketsRepository.findOne({
+      where: { id },
+      relations: { category: true, assigned_to: true },
+    });
     if (!ticket) throw new NotFoundException('Ticket not found');
     ticket.priority = dto.priority;
     return this.ticketsRepository.save(ticket);
   }
 
   async updateCategory(id: number, dto: UpdateCategoryDto): Promise<Ticket> {
-    const ticket = await this.ticketsRepository.findOne({ where: { id } });
+    const ticket = await this.ticketsRepository.findOne({
+      where: { id },
+      relations: { category: true, assigned_to: true },
+    });
     if (!ticket) throw new NotFoundException('Ticket not found');
 
     const category = await this.categoriesRepository.findOne({
@@ -171,7 +180,10 @@ export class TicketsService {
   }
 
   async close(id: number): Promise<Ticket> {
-    const ticket = await this.ticketsRepository.findOne({ where: { id } });
+    const ticket = await this.ticketsRepository.findOne({
+      where: { id },
+      relations: { category: true, assigned_to: true },
+    });
     if (!ticket) throw new NotFoundException('Ticket not found');
 
     ticket.status = TicketStatus.CLOSED;
