@@ -16,7 +16,7 @@ export class UsersService {
     @InjectRepository(User) private readonly usersRepository: Repository<User>,
   ) {}
 
-  async createAgent(dto: CreateAgentDto): Promise<User> {
+  async createAgent(dto: CreateAgentDto): Promise<User & { passwordResetLink: string }> {
     const existing = await this.usersRepository.findOne({
       where: { email: dto.email },
     });
@@ -30,7 +30,7 @@ export class UsersService {
       emailVerified: false,
     });
 
-    await admin.auth().generatePasswordResetLink(dto.email);
+    const passwordResetLink = await admin.auth().generatePasswordResetLink(dto.email);
 
     const user = this.usersRepository.create({
       firebase_uid: firebaseUser.uid,
@@ -39,7 +39,9 @@ export class UsersService {
       role: UserRole.AGENT,
     });
 
-    return this.usersRepository.save(user);
+    const saved = await this.usersRepository.save(user);
+
+    return { ...saved, passwordResetLink };
   }
 
   async deactivateAgent(id: number): Promise<User> {
