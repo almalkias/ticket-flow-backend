@@ -12,8 +12,9 @@ import { CreateAgentDto } from './dto/create-agent.dto';
 import { FirebaseAuthGuard } from '../firebase/firebase-auth.guard';
 import { RolesGuard } from '../firebase/roles.guard';
 import { Roles } from '../firebase/roles.decorator';
-import { UserRole } from './user.entity';
+import { UserRole, User } from './user.entity';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
+import { CurrentUser } from '../firebase/current-user.decorator';
 
 @ApiTags('Users')
 @ApiBearerAuth()
@@ -38,5 +39,12 @@ export class UsersController {
   @Roles(UserRole.ADMIN)
   findAllAgents() {
     return this.usersService.findAllAgents();
+  }
+
+  @Get('me')
+  @ApiBearerAuth()
+  @UseGuards(FirebaseAuthGuard)
+  me(@CurrentUser() user: User) {
+    return user;
   }
 }
