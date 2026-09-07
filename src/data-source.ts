@@ -5,10 +5,12 @@ dotenv.config();
 
 const url = process.env.DATABASE_URL;
 
+const isCompiled = __filename.endsWith('.js');
+
 const base: Partial<DataSourceOptions> = {
   type: 'postgres',
-  entities: ['src/**/*.entity.ts'],
-  migrations: ['src/migrations/*.ts'],
+  entities: isCompiled ? ['dist/**/*.entity.js'] : ['src/**/*.entity.ts'],
+  migrations: isCompiled ? ['dist/migrations/*.js'] : ['src/migrations/*.ts'],
 };
 
 const connectionOptions = url
