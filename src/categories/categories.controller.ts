@@ -16,25 +16,34 @@ import { UserRole } from '../users/user.entity';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 
 @ApiTags('Categories')
-@ApiBearerAuth()
-@UseGuards(FirebaseAuthGuard, RolesGuard)
 @Controller('categories')
 export class CategoriesController {
   constructor(private readonly categoriesService: CategoriesService) {}
 
   @Post()
+  @ApiBearerAuth()
+  @UseGuards(FirebaseAuthGuard, RolesGuard)
   @Roles(UserRole.ADMIN)
   create(@Body() dto: CreateCategoryDto) {
     return this.categoriesService.create(dto);
   }
 
   @Get()
+  @ApiBearerAuth()
+  @UseGuards(FirebaseAuthGuard, RolesGuard)
   @Roles(UserRole.ADMIN, UserRole.AGENT)
   findAll() {
     return this.categoriesService.findAll();
   }
 
+  @Get('public')
+  findActive() {
+    return this.categoriesService.findActive();
+  }
+
   @Patch(':id/deactivate')
+  @ApiBearerAuth()
+  @UseGuards(FirebaseAuthGuard, RolesGuard)
   @Roles(UserRole.ADMIN)
   deactivate(@Param('id') id: number) {
     return this.categoriesService.deactivate(id);

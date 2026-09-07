@@ -38,4 +38,11 @@ export class CategoriesService {
     category.is_active = false;
     return this.categoriesRepository.save(category);
   }
+
+  async findActive(): Promise<Category[]> {
+    return this.categoriesRepository.find({
+      where: { is_active: true },
+      order: { name: 'ASC' },
+    });
+  }
 }
