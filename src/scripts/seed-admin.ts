@@ -5,19 +5,27 @@ import { User, UserRole } from '../users/user.entity';
 
 dotenv.config({ path: `${__dirname}/../../.env` });
 
-const serviceAccount = require('../../firebase-service-account.json');
+const serviceAccount = process.env.FIREBASE_SERVICE_ACCOUNT
+  ? JSON.parse(Buffer.from(process.env.FIREBASE_SERVICE_ACCOUNT, 'base64').toString('utf8'))
+  : require('../../firebase-service-account.json');
 
 admin.initializeApp({
-  credential: admin.credential.cert({ ...serviceAccount }),
+  credential: admin.credential.cert(serviceAccount),
 });
+
+const url = process.env.DATABASE_URL;
 
 const dataSource = new DataSource({
   type: 'postgres',
-  host: process.env.DB_HOST,
-  port: Number(process.env.DB_PORT),
-  username: process.env.DB_USERNAME,
-  password: process.env.DB_PASSWORD,
-  database: process.env.DB_NAME,
+  ...(url
+    ? { url, ssl: { rejectUnauthorized: false } }
+    : {
+        host: process.env.DB_HOST,
+        port: Number(process.env.DB_PORT),
+        username: process.env.DB_USERNAME,
+        password: process.env.DB_PASSWORD,
+        database: process.env.DB_NAME,
+      }),
   entities: [User],
 });
 
