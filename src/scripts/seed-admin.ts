@@ -72,4 +72,20 @@ async function seedAdmin() {
   await dataSource.destroy();
 }
 
-seedAdmin();
+async function setAdminPassword() {
+  const email = 'admin@ticketflow.com';
+  const password = process.env.ADMIN_PASSWORD || '';
+
+  if (!password) {
+    console.error('Error: ADMIN_PASSWORD env var is required');
+    console.error('Usage: ADMIN_PASSWORD=yourpassword npm run seed:admin:prod -- --set-password');
+    process.exit(1);
+  }
+
+  const user = await admin.auth().getUserByEmail(email);
+  await admin.auth().updateUser(user.uid, { password });
+  console.log(`Password set successfully for ${email}`);
+}
+
+const isSetPassword = process.argv.includes('--set-password');
+isSetPassword ? setAdminPassword() : seedAdmin();
