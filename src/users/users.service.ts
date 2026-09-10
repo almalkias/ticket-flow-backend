@@ -18,6 +18,7 @@ export class UsersService {
 
   async createAgent(
     dto: CreateAgentDto,
+    currentUser: User,
   ): Promise<User & { passwordResetLink: string }> {
     const existing = await this.usersRepository.findOne({
       where: { email: dto.email },
@@ -36,20 +37,27 @@ export class UsersService {
       .auth()
       .generatePasswordResetLink(dto.email);
 
-    const user = this.usersRepository.create({
+    const agent = this.usersRepository.create({
       firebase_uid: firebaseUser.uid,
       email: dto.email,
       full_name: dto.full_name,
       role: UserRole.AGENT,
+      organization: { id: currentUser.organization.id },
     });
 
-    const saved = await this.usersRepository.save(user);
+    const saved = await this.usersRepository.save(agent);
 
     return { ...saved, passwordResetLink };
   }
 
-  async deactivateAgent(id: number): Promise<User> {
-    const user = await this.usersRepository.findOne({ where: { id } });
+  async deactivateAgent(id: number, currentUser: User): Promise<User> {
+    const user = await this.usersRepository.findOne({
+      where: {
+        id,
+        role: UserRole.AGENT,
+        organization: { id: currentUser.organization.id },
+      },
+    });
 
     if (!user) {
       throw new NotFoundException('User not found');
@@ -65,9 +73,12 @@ export class UsersService {
     return this.usersRepository.save(user);
   }
 
-  async findAllAgents(): Promise<User[]> {
+  async findAllAgents(currentUser: User): Promise<User[]> {
     return this.usersRepository.find({
-      where: { role: UserRole.AGENT },
+      where: {
+        role: UserRole.AGENT,
+        organization: { id: currentUser.organization.id },
+      },
       order: { created_at: 'DESC' },
     });
   }

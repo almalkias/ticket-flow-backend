@@ -25,20 +25,20 @@ export class UsersController {
 
   @Post('agents')
   @Roles(UserRole.ADMIN)
-  createAgent(@Body() dto: CreateAgentDto) {
-    return this.usersService.createAgent(dto);
+  createAgent(@Body() dto: CreateAgentDto, @CurrentUser() currentUser: User) {
+    return this.usersService.createAgent(dto, currentUser);
   }
 
   @Patch('agents/:id/deactivate')
   @Roles(UserRole.ADMIN)
-  deactivateAgent(@Param('id') id: number) {
-    return this.usersService.deactivateAgent(id);
+  deactivateAgent(@Param('id') id: number, @CurrentUser() currentUser: User) {
+    return this.usersService.deactivateAgent(id, currentUser);
   }
 
   @Get('agents')
   @Roles(UserRole.ADMIN)
-  findAllAgents() {
-    return this.usersService.findAllAgents();
+  findAllAgents(@CurrentUser() currentUser: User) {
+    return this.usersService.findAllAgents(currentUser);
   }
 
   @Get('me')
