@@ -8,6 +8,7 @@ import { CategoriesModule } from './categories/categories.module';
 import { TicketsModule } from './tickets/tickets.module';
 import { MessagesModule } from './messages/messages.module';
 import { NotificationsModule } from './notifications/notifications.module';
+import { OrganizationsModule } from './organizations/organizations.module';
 
 @Module({
   imports: [
@@ -19,6 +20,7 @@ import { NotificationsModule } from './notifications/notifications.module';
     TicketsModule,
     MessagesModule,
     NotificationsModule,
+    OrganizationsModule,
   ],
   controllers: [],
   providers: [],

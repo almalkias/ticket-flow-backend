@@ -6,6 +6,7 @@ import { Category } from './categories/category.entity';
 import { Ticket } from './tickets/ticket.entity';
 import { Message } from './messages/message.entity';
 import { Notification } from './notifications/notification.entity';
+import { Organization } from './organizations/organization.entity';
 
 @Module({
   imports: [
@@ -16,7 +17,7 @@ import { Notification } from './notifications/notification.entity';
         const url = config.get<string>('DATABASE_URL');
         const base = {
           type: 'postgres' as const,
-          entities: [User, Category, Ticket, Message, Notification],
+          entities: [User, Category, Ticket, Message, Notification, Organization],
           synchronize: false,
         };
         if (url) {
