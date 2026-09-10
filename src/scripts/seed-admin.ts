@@ -6,7 +6,11 @@ import { User, UserRole } from '../users/user.entity';
 dotenv.config({ path: `${__dirname}/../../.env` });
 
 const serviceAccount = process.env.FIREBASE_SERVICE_ACCOUNT
-  ? JSON.parse(Buffer.from(process.env.FIREBASE_SERVICE_ACCOUNT, 'base64').toString('utf8'))
+  ? JSON.parse(
+      Buffer.from(process.env.FIREBASE_SERVICE_ACCOUNT, 'base64').toString(
+        'utf8',
+      ),
+    )
   : require('../../firebase-service-account.json');
 
 admin.initializeApp({
@@ -38,6 +42,7 @@ async function seedAdmin() {
   const existing = await dataSource
     .getRepository(User)
     .findOne({ where: { email } });
+
   if (existing) {
     console.log('Admin already exists');
     await dataSource.destroy();
@@ -58,7 +63,6 @@ async function seedAdmin() {
   const firebaseUser = await admin
     .auth()
     .createUser({ email, emailVerified: true });
-  await admin.auth().generatePasswordResetLink(email);
 
   const user = dataSource.getRepository(User).create({
     firebase_uid: firebaseUser.uid,
@@ -78,7 +82,9 @@ async function setAdminPassword() {
 
   if (!password) {
     console.error('Error: ADMIN_PASSWORD env var is required');
-    console.error('Usage: ADMIN_PASSWORD=yourpassword npm run seed:admin:prod -- --set-password');
+    console.error(
+      'Usage: ADMIN_PASSWORD=yourpassword npm run seed:admin:prod -- --set-password',
+    );
     process.exit(1);
   }
 
