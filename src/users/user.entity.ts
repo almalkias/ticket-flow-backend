@@ -5,6 +5,8 @@ import {
   CreateDateColumn,
   UpdateDateColumn,
 } from 'typeorm';
+import { ManyToOne, JoinColumn } from 'typeorm';
+import { Organization } from '../organizations/organization.entity';
 
 export enum UserRole {
   AGENT = 'agent',
@@ -30,6 +32,10 @@ export class User {
 
   @Column({ default: true })
   is_active!: boolean;
+
+  @ManyToOne(() => Organization, { nullable: true })
+  @JoinColumn({ name: 'organization_id' })
+  organization!: Organization;
 
   @CreateDateColumn()
   created_at!: Date;

@@ -9,6 +9,7 @@ import {
 } from 'typeorm';
 import { Category } from '../categories/category.entity';
 import { User } from '../users/user.entity';
+import { Organization } from '../organizations/organization.entity';
 
 export enum TicketStatus {
   OPEN = 'open',
@@ -57,6 +58,10 @@ export class Ticket {
   @ManyToOne(() => User, { nullable: true })
   @JoinColumn({ name: 'assigned_to' })
   assigned_to!: User;
+
+  @ManyToOne(() => Organization, { nullable: true })
+  @JoinColumn({ name: 'organization_id' })
+  organization!: Organization;
 
   @Column({ nullable: true })
   resolved_at!: Date;
