@@ -12,8 +12,10 @@ import { CreateCategoryDto } from './dto/create-category.dto';
 import { FirebaseAuthGuard } from '../firebase/firebase-auth.guard';
 import { RolesGuard } from '../firebase/roles.guard';
 import { Roles } from '../firebase/roles.decorator';
-import { UserRole } from '../users/user.entity';
+import { User, UserRole } from '../users/user.entity';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
+import { CurrentUser } from '../firebase/current-user.decorator';
+import { Query } from '@nestjs/common';
 
 @ApiTags('Categories')
 @Controller('categories')
@@ -24,28 +26,28 @@ export class CategoriesController {
   @ApiBearerAuth()
   @UseGuards(FirebaseAuthGuard, RolesGuard)
   @Roles(UserRole.ADMIN)
-  create(@Body() dto: CreateCategoryDto) {
-    return this.categoriesService.create(dto);
+  create(@Body() dto: CreateCategoryDto, @CurrentUser() currentUser: User) {
+    return this.categoriesService.create(dto, currentUser);
   }
 
   @Get()
   @ApiBearerAuth()
   @UseGuards(FirebaseAuthGuard, RolesGuard)
   @Roles(UserRole.ADMIN, UserRole.AGENT)
-  findAll() {
-    return this.categoriesService.findAll();
+  findAll(@CurrentUser() currentUser: User) {
+    return this.categoriesService.findAll(currentUser);
   }
 
   @Get('public')
-  findActive() {
-    return this.categoriesService.findActive();
+  findActive(@Query('org') orgUuid: string) {
+    return this.categoriesService.findActive(orgUuid);
   }
 
   @Patch(':id/deactivate')
   @ApiBearerAuth()
   @UseGuards(FirebaseAuthGuard, RolesGuard)
   @Roles(UserRole.ADMIN)
-  deactivate(@Param('id') id: number) {
-    return this.categoriesService.deactivate(id);
+  deactivate(@Param('id') id: number, @CurrentUser() currentUser: User) {
+    return this.categoriesService.deactivate(id, currentUser);
   }
 }
