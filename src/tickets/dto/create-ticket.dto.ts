@@ -1,4 +1,4 @@
-import { IsString, IsNotEmpty, IsEmail, IsNumber } from 'class-validator';
+import { IsString, IsNotEmpty, IsEmail, IsNumber, IsUUID } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 
 export class CreateTicketDto {
@@ -25,4 +25,8 @@ export class CreateTicketDto {
   @ApiProperty()
   @IsNumber()
   category_id!: number;
+
+  @ApiProperty()
+  @IsUUID()
+  org_uuid!: string;
 }

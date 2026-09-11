@@ -39,8 +39,12 @@ export class TicketsController {
   }
 
   @Get('track')
-  track(@Query('email') email: string, @Query('reference') reference: string) {
-    return this.ticketsService.track(email, reference);
+  track(
+    @Query('email') email: string,
+    @Query('reference') reference: string,
+    @Query('org') orgUuid: string,
+  ) {
+    return this.ticketsService.track(email, reference, orgUuid);
   }
 
   @Get(':id')
@@ -55,24 +59,36 @@ export class TicketsController {
   @ApiBearerAuth()
   @UseGuards(FirebaseAuthGuard, RolesGuard)
   @Roles(UserRole.ADMIN)
-  assign(@Param('id') id: number, @Body() dto: AssignTicketDto) {
-    return this.ticketsService.assign(id, dto);
+  assign(
+    @Param('id') id: number,
+    @Body() dto: AssignTicketDto,
+    @CurrentUser() currentUser: User,
+  ) {
+    return this.ticketsService.assign(id, dto, currentUser);
   }
 
   @Patch(':id/priority')
   @ApiBearerAuth()
   @UseGuards(FirebaseAuthGuard, RolesGuard)
   @Roles(UserRole.ADMIN)
-  updatePriority(@Param('id') id: number, @Body() dto: UpdatePriorityDto) {
-    return this.ticketsService.updatePriority(id, dto);
+  updatePriority(
+    @Param('id') id: number,
+    @Body() dto: UpdatePriorityDto,
+    @CurrentUser() currentUser: User,
+  ) {
+    return this.ticketsService.updatePriority(id, dto, currentUser);
   }
 
   @Patch(':id/category')
   @ApiBearerAuth()
   @UseGuards(FirebaseAuthGuard, RolesGuard)
   @Roles(UserRole.ADMIN)
-  updateCategory(@Param('id') id: number, @Body() dto: UpdateCategoryDto) {
-    return this.ticketsService.updateCategory(id, dto);
+  updateCategory(
+    @Param('id') id: number,
+    @Body() dto: UpdateCategoryDto,
+    @CurrentUser() currentUser: User,
+  ) {
+    return this.ticketsService.updateCategory(id, dto, currentUser);
   }
 
   @Patch(':id/resolve')
@@ -87,7 +103,7 @@ export class TicketsController {
   @ApiBearerAuth()
   @UseGuards(FirebaseAuthGuard, RolesGuard)
   @Roles(UserRole.ADMIN)
-  close(@Param('id') id: number) {
-    return this.ticketsService.close(id);
+  close(@Param('id') id: number, @CurrentUser() currentUser: User) {
+    return this.ticketsService.close(id, currentUser);
   }
 }
