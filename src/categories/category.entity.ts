@@ -3,16 +3,18 @@ import {
   PrimaryGeneratedColumn,
   Column,
   CreateDateColumn,
+  Unique
 } from 'typeorm';
 import { ManyToOne, JoinColumn } from 'typeorm';
 import { Organization } from '../organizations/organization.entity';
 
+@Unique(['name', 'organization'])
 @Entity('categories')
 export class Category {
   @PrimaryGeneratedColumn()
   id!: number;
 
-  @Column({ unique: true })
+  @Column()
   name!: string;
 
   @Column({ default: true })
