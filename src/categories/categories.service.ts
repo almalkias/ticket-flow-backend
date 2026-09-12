@@ -7,6 +7,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Category } from './category.entity';
 import { CreateCategoryDto } from './dto/create-category.dto';
+import { UpdateCategoryDto } from './dto/update-category.dto';
 import { User } from '../users/user.entity';
 
 @Injectable()
@@ -40,14 +41,18 @@ export class CategoriesService {
     });
   }
 
-  async deactivate(id: number, currentUser: User): Promise<Category> {
+  async update(
+    id: number,
+    dto: UpdateCategoryDto,
+    currentUser: User,
+  ): Promise<Category> {
     const category = await this.categoriesRepository.findOne({
       where: { id, organization: { id: currentUser.organization.id } },
     });
     if (!category) {
       throw new NotFoundException('Category not found');
     }
-    category.is_active = false;
+    category.is_active = dto.is_active;
     return this.categoriesRepository.save(category);
   }
 

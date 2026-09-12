@@ -2,12 +2,12 @@ import {
   Injectable,
   ConflictException,
   NotFoundException,
-  ForbiddenException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { User, UserRole } from './user.entity';
 import { CreateAgentDto } from './dto/create-agent.dto';
+import { UpdateAgentDto } from './dto/update-agent.dto';
 import * as admin from 'firebase-admin';
 
 @Injectable()
@@ -50,7 +50,11 @@ export class UsersService {
     return { ...saved, passwordResetLink };
   }
 
-  async deactivateAgent(id: number, currentUser: User): Promise<User> {
+  async updateAgent(
+    id: number,
+    dto: UpdateAgentDto,
+    currentUser: User,
+  ): Promise<User> {
     const user = await this.usersRepository.findOne({
       where: {
         id,
@@ -63,13 +67,11 @@ export class UsersService {
       throw new NotFoundException('User not found');
     }
 
-    if (user.role !== UserRole.AGENT) {
-      throw new ForbiddenException('Can only deactivate agents');
+    if (!dto.is_active) {
+      await admin.auth().revokeRefreshTokens(user.firebase_uid);
     }
 
-    await admin.auth().revokeRefreshTokens(user.firebase_uid);
-
-    user.is_active = false;
+    user.is_active = dto.is_active;
     return this.usersRepository.save(user);
   }
 

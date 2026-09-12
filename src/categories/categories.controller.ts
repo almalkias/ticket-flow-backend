@@ -9,6 +9,7 @@ import {
 } from '@nestjs/common';
 import { CategoriesService } from './categories.service';
 import { CreateCategoryDto } from './dto/create-category.dto';
+import { UpdateCategoryDto } from './dto/update-category.dto';
 import { FirebaseAuthGuard } from '../firebase/firebase-auth.guard';
 import { RolesGuard } from '../firebase/roles.guard';
 import { Roles } from '../firebase/roles.decorator';
@@ -43,11 +44,15 @@ export class CategoriesController {
     return this.categoriesService.findActive(orgUuid);
   }
 
-  @Patch(':id/deactivate')
+  @Patch(':id')
   @ApiBearerAuth()
   @UseGuards(FirebaseAuthGuard, RolesGuard)
   @Roles(UserRole.ADMIN)
-  deactivate(@Param('id') id: number, @CurrentUser() currentUser: User) {
-    return this.categoriesService.deactivate(id, currentUser);
+  update(
+    @Param('id') id: number,
+    @Body() dto: UpdateCategoryDto,
+    @CurrentUser() currentUser: User,
+  ) {
+    return this.categoriesService.update(id, dto, currentUser);
   }
 }

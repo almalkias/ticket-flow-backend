@@ -9,6 +9,7 @@ import {
 } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { CreateAgentDto } from './dto/create-agent.dto';
+import { UpdateAgentDto } from './dto/update-agent.dto';
 import { FirebaseAuthGuard } from '../firebase/firebase-auth.guard';
 import { RolesGuard } from '../firebase/roles.guard';
 import { Roles } from '../firebase/roles.decorator';
@@ -29,10 +30,14 @@ export class UsersController {
     return this.usersService.createAgent(dto, currentUser);
   }
 
-  @Patch('agents/:id/deactivate')
+  @Patch('agents/:id')
   @Roles(UserRole.ADMIN)
-  deactivateAgent(@Param('id') id: number, @CurrentUser() currentUser: User) {
-    return this.usersService.deactivateAgent(id, currentUser);
+  updateAgent(
+    @Param('id') id: number,
+    @Body() dto: UpdateAgentDto,
+    @CurrentUser() currentUser: User,
+  ) {
+    return this.usersService.updateAgent(id, dto, currentUser);
   }
 
   @Get('agents')
