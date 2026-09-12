@@ -38,11 +38,14 @@ export class TicketsService {
       throw new NotFoundException('Organization not found');
     }
 
-    const category = await this.categoriesRepository.findOne({
-      where: { id: dto.category_id, organization: { id: org.id } },
-    });
-    if (!category) {
-      throw new NotFoundException('Category not found');
+    let category: Category | null = null;
+    if (dto.category_id) {
+      category = await this.categoriesRepository.findOne({
+        where: { id: dto.category_id, organization: { id: org.id } },
+      });
+      if (!category) {
+        throw new NotFoundException('Category not found');
+      }
     }
 
     const date = new Date();
@@ -53,7 +56,7 @@ export class TicketsService {
     const ticket = this.ticketsRepository.create({
       ...dto,
       reference_number,
-      category,
+      ...(category && { category }),
       organization: { id: org.id },
     });
 
