@@ -4,10 +4,10 @@ import { ApiProperty } from '@nestjs/swagger';
 export class CreateAgentDto {
   @ApiProperty()
   @IsString()
-  @IsNotEmpty()
+  @IsNotEmpty({ message: 'Full name is required' })
   full_name!: string;
 
   @ApiProperty()
-  @IsEmail()
+  @IsEmail({}, { message: 'A valid email is required' })
   email!: string;
 }

@@ -4,6 +4,6 @@ import { ApiProperty } from '@nestjs/swagger';
 export class CreateCategoryDto {
   @ApiProperty()
   @IsString()
-  @IsNotEmpty()
+  @IsNotEmpty({ message: 'Category name is required' })
   name!: string;
 }

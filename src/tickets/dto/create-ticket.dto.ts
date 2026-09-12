@@ -4,30 +4,30 @@ import { ApiPropertyOptional, ApiProperty } from '@nestjs/swagger';
 export class CreateTicketDto {
   @ApiProperty()
   @IsString()
-  @IsNotEmpty()
+  @IsNotEmpty({ message: 'Full name is required' })
   customer_name!: string;
 
   @ApiProperty()
-  @IsEmail()
-  @IsNotEmpty()
+  @IsEmail({}, { message: 'A valid email is required' })
+  @IsNotEmpty({ message: 'Email is required' })
   customer_email!: string;
 
   @ApiProperty()
   @IsString()
-  @IsNotEmpty()
+  @IsNotEmpty({ message: 'Subject is required' })
   subject!: string;
 
   @ApiProperty()
   @IsString()
-  @IsNotEmpty()
+  @IsNotEmpty({ message: 'Description is required' })
   description!: string;
 
   @ApiPropertyOptional()
   @IsOptional()
-  @IsNumber()
+  @IsNumber({}, { message: 'Invalid category' })
   category_id?: number;
 
   @ApiProperty()
-  @IsUUID()
+  @IsUUID('all', { message: 'Invalid organization link' })
   org_uuid!: string;
 }

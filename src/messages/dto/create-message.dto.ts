@@ -10,7 +10,7 @@ import {
 export class CreateMessageDto {
   @ApiProperty()
   @IsString()
-  @IsNotEmpty()
+  @IsNotEmpty({ message: 'Message body is required' })
   body!: string;
 
   @ApiPropertyOptional()
@@ -19,7 +19,7 @@ export class CreateMessageDto {
   is_internal?: boolean;
 
   @ApiPropertyOptional()
-  @IsEmail()
+  @IsEmail({}, { message: 'A valid email is required' })
   @IsOptional()
   customer_email?: string;
 
