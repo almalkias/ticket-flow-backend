@@ -196,10 +196,9 @@ export class TicketsService {
       where: { id, organization: { id: user.organization.id } },
       relations: { assigned_to: true },
     });
-
     if (!ticket) throw new NotFoundException('Ticket not found');
 
-    if (ticket.assigned_to?.id !== user.id) {
+    if (user.role === UserRole.AGENT && ticket.assigned_to?.id !== user.id) {
       throw new ForbiddenException(
         'You can only resolve your assigned tickets',
       );
@@ -210,7 +209,11 @@ export class TicketsService {
     const saved = await this.ticketsRepository.save(ticket);
 
     const admins = await this.usersRepository.find({
-      where: { role: UserRole.ADMIN, is_active: true, organization: { id: user.organization.id } },
+      where: {
+        role: UserRole.ADMIN,
+        is_active: true,
+        organization: { id: user.organization.id },
+      },
     });
     const adminIds = admins.map((a) => a.id);
 

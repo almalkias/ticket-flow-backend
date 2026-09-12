@@ -94,7 +94,7 @@ export class TicketsController {
   @Patch(':id/resolve')
   @ApiBearerAuth()
   @UseGuards(FirebaseAuthGuard, RolesGuard)
-  @Roles(UserRole.AGENT)
+  @Roles(UserRole.ADMIN, UserRole.AGENT)
   resolve(@Param('id') id: number, @CurrentUser() user: User) {
     return this.ticketsService.resolve(id, user);
   }
