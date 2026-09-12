@@ -32,10 +32,18 @@ export class MessagesService {
   ): Promise<Message> {
     const ticket = await this.ticketsRepository.findOne({
       where: { id: ticketId },
-      relations: { assigned_to: true },
+      relations: { assigned_to: true, organization: true },
     });
 
     if (!ticket) throw new NotFoundException('Ticket not found');
+
+    if (user && ticket.organization?.id !== user.organization.id) {
+      throw new ForbiddenException('Access denied');
+    }
+
+    if (user?.role === UserRole.AGENT && ticket.assigned_to?.id !== user.id) {
+      throw new ForbiddenException('Access denied');
+    }
 
     if (ticket.status === TicketStatus.CLOSED) {
       throw new ForbiddenException('Cannot reply to a closed ticket');
@@ -76,7 +84,7 @@ export class MessagesService {
       }
 
       const admins = await this.usersRepository.find({
-        where: { role: UserRole.ADMIN, is_active: true },
+        where: { role: UserRole.ADMIN, is_active: true, organization: { id: ticket.organization.id } },
       });
       const recipientIds = admins.map((a) => a.id);
       if (ticket.assigned_to) {
@@ -106,9 +114,18 @@ export class MessagesService {
   async findAll(ticketId: number, user?: User): Promise<Message[]> {
     const ticket = await this.ticketsRepository.findOne({
       where: { id: ticketId },
+      relations: { organization: true, assigned_to: true },
     });
 
     if (!ticket) throw new NotFoundException('Ticket not found');
+
+    if (user && ticket.organization?.id !== user.organization.id) {
+      throw new ForbiddenException('Access denied');
+    }
+
+    if (user?.role === UserRole.AGENT && ticket.assigned_to?.id !== user.id) {
+      throw new ForbiddenException('Access denied');
+    }
 
     if (!user) {
       // customer — only public messages
