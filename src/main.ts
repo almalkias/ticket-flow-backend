@@ -1,7 +1,7 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
-import { ValidationPipe } from '@nestjs/common';
+import { I18nValidationPipe, I18nValidationExceptionFilter } from 'nestjs-i18n';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -10,7 +10,10 @@ async function bootstrap() {
     origin: ['http://localhost:5173', 'https://tickets-flow.netlify.app'],
   });
 
-  app.useGlobalPipes(new ValidationPipe());
+  app.useGlobalPipes(new I18nValidationPipe());
+  app.useGlobalFilters(
+    new I18nValidationExceptionFilter({ detailedErrors: false }),
+  );
 
   const config = new DocumentBuilder()
     .setTitle('Ticket Flow API')

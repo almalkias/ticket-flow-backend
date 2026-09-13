@@ -1,0 +1,11 @@
+{
+    "categoryNameRequired": "Category name is required",
+    "orgNameRequired": "Organization name is required",
+    "fullNameRequired": "Full name is required",
+    "validEmailRequired": "A valid email is required",
+    "emailRequired": "Email is required",
+    "passwordMinLength": "Password must be at least 8 characters",
+    "subjectRequired": "Subject is required",
+    "descriptionRequired": "Description is required",
+    "messageBodyRequired": "Message body is required"
+}

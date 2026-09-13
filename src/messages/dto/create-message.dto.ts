@@ -6,11 +6,12 @@ import {
   IsOptional,
   IsEmail,
 } from 'class-validator';
+import { i18nValidationMessage } from 'nestjs-i18n';
 
 export class CreateMessageDto {
   @ApiProperty()
   @IsString()
-  @IsNotEmpty({ message: 'Message body is required' })
+  @IsNotEmpty({ message: i18nValidationMessage('validation.messageBodyRequired') })
   body!: string;
 
   @ApiPropertyOptional()
@@ -19,7 +20,7 @@ export class CreateMessageDto {
   is_internal?: boolean;
 
   @ApiPropertyOptional()
-  @IsEmail({}, { message: 'A valid email is required' })
+  @IsEmail({}, { message: i18nValidationMessage('validation.validEmailRequired') })
   @IsOptional()
   customer_email?: string;
 

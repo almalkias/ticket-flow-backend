@@ -9,6 +9,7 @@ import { TicketsModule } from './tickets/tickets.module';
 import { MessagesModule } from './messages/messages.module';
 import { NotificationsModule } from './notifications/notifications.module';
 import { OrganizationsModule } from './organizations/organizations.module';
+import { I18nSetupModule } from './i18n.module';
 
 @Module({
   imports: [
@@ -21,6 +22,7 @@ import { OrganizationsModule } from './organizations/organizations.module';
     MessagesModule,
     NotificationsModule,
     OrganizationsModule,
+    I18nSetupModule,
   ],
   controllers: [],
   providers: [],
