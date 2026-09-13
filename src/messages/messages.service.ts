@@ -6,6 +6,7 @@ import {
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
+import { I18nService, I18nContext } from 'nestjs-i18n';
 import { Message, SenderType } from './message.entity';
 import { Ticket, TicketStatus } from '../tickets/ticket.entity';
 import { User, UserRole } from '../users/user.entity';
@@ -23,6 +24,7 @@ export class MessagesService {
     private readonly notificationsService: NotificationsService,
     @InjectRepository(User)
     private readonly usersRepository: Repository<User>,
+    private readonly i18n: I18nService,
   ) {}
 
   async create(
@@ -35,7 +37,12 @@ export class MessagesService {
       relations: { assigned_to: true, organization: true },
     });
 
-    if (!ticket) throw new NotFoundException('Ticket not found');
+    if (!ticket)
+      throw new NotFoundException(
+        this.i18n.t('errors.ticketNotFound', {
+          lang: I18nContext.current()?.lang,
+        }),
+      );
 
     if (user && ticket.organization?.id !== user.organization.id) {
       throw new ForbiddenException('Access denied');
@@ -46,7 +53,11 @@ export class MessagesService {
     }
 
     if (ticket.status === TicketStatus.CLOSED) {
-      throw new ForbiddenException('Cannot reply to a closed ticket');
+      throw new ForbiddenException(
+        this.i18n.t('errors.cannotReplyClosed', {
+          lang: I18nContext.current()?.lang,
+        }),
+      );
     }
 
     let senderName: string;
@@ -72,7 +83,11 @@ export class MessagesService {
         dto.customer_email !== ticket.customer_email ||
         dto.reference_number !== ticket.reference_number
       ) {
-        throw new ForbiddenException('Invalid email or reference number');
+        throw new ForbiddenException(
+          this.i18n.t('errors.invalidEmailOrReference', {
+            lang: I18nContext.current()?.lang,
+          }),
+        );
       }
 
       senderName = ticket.customer_name;
@@ -117,7 +132,12 @@ export class MessagesService {
       relations: { organization: true, assigned_to: true },
     });
 
-    if (!ticket) throw new NotFoundException('Ticket not found');
+    if (!ticket)
+      throw new NotFoundException(
+        this.i18n.t('errors.ticketNotFound', {
+          lang: I18nContext.current()?.lang,
+        }),
+      );
 
     if (user && ticket.organization?.id !== user.organization.id) {
       throw new ForbiddenException('Access denied');

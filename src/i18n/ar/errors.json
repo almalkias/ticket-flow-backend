@@ -1,0 +1,6 @@
+{
+    "ticketNotFound": "التذكرة غير موجودة",
+    "invalidEmailOrReference": "البريد الإلكتروني أو الرقم المرجعي غير صحيح",
+    "cannotReplyClosed": "لا يمكن الرد على تذكرة مغلقة",
+    "emailInUse": "البريد الإلكتروني مستخدم بالفعل"
+}

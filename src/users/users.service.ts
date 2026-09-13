@@ -5,6 +5,7 @@ import {
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
+import { I18nService, I18nContext } from 'nestjs-i18n';
 import { User, UserRole } from './user.entity';
 import { CreateAgentDto } from './dto/create-agent.dto';
 import { UpdateAgentDto } from './dto/update-agent.dto';
@@ -14,6 +15,7 @@ import * as admin from 'firebase-admin';
 export class UsersService {
   constructor(
     @InjectRepository(User) private readonly usersRepository: Repository<User>,
+    private readonly i18n: I18nService,
   ) {}
 
   async createAgent(dto: CreateAgentDto, currentUser: User): Promise<User> {
@@ -22,7 +24,9 @@ export class UsersService {
     });
 
     if (existing) {
-      throw new ConflictException('Email already exists');
+      throw new ConflictException(
+        this.i18n.t('errors.emailInUse', { lang: I18nContext.current()?.lang }),
+      );
     }
 
     const firebaseUser = await admin.auth().createUser({

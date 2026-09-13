@@ -1,0 +1,6 @@
+{
+    "ticketNotFound": "Ticket not found",
+    "invalidEmailOrReference": "Invalid email or reference number",
+    "cannotReplyClosed": "Cannot reply to a closed ticket",
+    "emailInUse": "Email already in use"
+}

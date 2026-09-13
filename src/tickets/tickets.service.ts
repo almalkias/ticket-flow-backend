@@ -5,6 +5,7 @@ import {
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
+import { I18nService, I18nContext } from 'nestjs-i18n';
 import { Ticket, TicketStatus } from './ticket.entity';
 import { Category } from '../categories/category.entity';
 import { User, UserRole } from '../users/user.entity';
@@ -28,6 +29,7 @@ export class TicketsService {
     @InjectRepository(Organization)
     private readonly orgsRepository: Repository<Organization>,
     private readonly notificationsService: NotificationsService,
+    private readonly i18n: I18nService,
   ) {}
 
   async create(dto: CreateTicketDto): Promise<Ticket> {
@@ -257,7 +259,12 @@ export class TicketsService {
       relations: { category: true, assigned_to: true },
     });
 
-    if (!ticket) throw new NotFoundException('Ticket not found');
+    if (!ticket)
+      throw new NotFoundException(
+        this.i18n.t('errors.ticketNotFound', {
+          lang: I18nContext.current()?.lang,
+        }),
+      );
 
     return ticket;
   }

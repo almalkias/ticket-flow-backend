@@ -1,6 +1,7 @@
 import { Injectable, ConflictException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
+import { I18nService, I18nContext } from 'nestjs-i18n';
 import { Organization } from './organization.entity';
 import { User, UserRole } from '../users/user.entity';
 import { RegisterOrganizationDto } from './dto/register-organization.dto';
@@ -13,6 +14,7 @@ export class OrganizationsService {
     private readonly orgsRepository: Repository<Organization>,
     @InjectRepository(User)
     private readonly usersRepository: Repository<User>,
+    private readonly i18n: I18nService,
   ) {}
 
   async register(dto: RegisterOrganizationDto): Promise<Organization> {
@@ -20,7 +22,9 @@ export class OrganizationsService {
       where: { email: dto.admin_email },
     });
     if (existingUser) {
-      throw new ConflictException('Email already in use');
+      throw new ConflictException(
+        this.i18n.t('errors.emailInUse', { lang: I18nContext.current()?.lang }),
+      );
     }
 
     const org = this.orgsRepository.create({ name: dto.org_name });
@@ -35,7 +39,9 @@ export class OrganizationsService {
       });
     } catch {
       await this.orgsRepository.remove(savedOrg);
-      throw new ConflictException('Email already in use');
+      throw new ConflictException(
+        this.i18n.t('errors.emailInUse', { lang: I18nContext.current()?.lang }),
+      );
     }
 
     const user = this.usersRepository.create({
