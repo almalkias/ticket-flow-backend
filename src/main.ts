@@ -10,7 +10,7 @@ async function bootstrap() {
     origin: ['http://localhost:5173', 'https://tickets-flow.netlify.app'],
   });
 
-  app.useGlobalPipes(new I18nValidationPipe());
+  app.useGlobalPipes(new I18nValidationPipe({ transform: true }));
   app.useGlobalFilters(
     new I18nValidationExceptionFilter({ detailedErrors: false }),
   );
