@@ -51,11 +51,11 @@ export class Ticket {
   @Column({ type: 'enum', enum: TicketPriority, default: TicketPriority.LOW })
   priority!: TicketPriority;
 
-  @ManyToOne(() => Category, { nullable: true })
+  @ManyToOne(() => Category, { nullable: true, onDelete: 'SET NULL' })
   @JoinColumn({ name: 'category_id' })
   category!: Category;
 
-  @ManyToOne(() => User, { nullable: true })
+  @ManyToOne(() => User, { nullable: true, onDelete: 'SET NULL' })
   @JoinColumn({ name: 'assigned_to' })
   assigned_to!: User;
 

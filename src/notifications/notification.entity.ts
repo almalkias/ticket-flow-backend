@@ -21,11 +21,11 @@ export class Notification {
   @PrimaryGeneratedColumn()
   id!: number;
 
-  @ManyToOne(() => User)
+  @ManyToOne(() => User, { onDelete: 'CASCADE' })
   @JoinColumn({ name: 'user_id' })
   user!: User;
 
-  @ManyToOne(() => Ticket)
+  @ManyToOne(() => Ticket, { onDelete: 'CASCADE' })
   @JoinColumn({ name: 'ticket_id' })
   ticket!: Ticket;
 
